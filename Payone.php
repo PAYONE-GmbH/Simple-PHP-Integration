@@ -66,7 +66,8 @@ class Payone {
                 // if the content type is text/plain, parse response into array
                 $return = self::parseResponse($response);
             } else {
-                // if the content type is anything else, decode response body and parse into array
+		// if the content type is anything else, decode response body and parse into array
+		// we can safely assume it's JSON because of the way the API currently works
                 $return = json_decode($response->getBody(), true);
             }
 

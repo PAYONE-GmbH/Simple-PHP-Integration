@@ -29,7 +29,8 @@ require 'vendor/autoload.php';
 /**
  * Class Payone
  */
-class Payone {
+class Payone
+{
 
     /**
      * The URL of the Payone API
@@ -41,9 +42,9 @@ class Payone {
      *
      * @param array $request
      * @param string $responsetype
-     * @throws Exception
      * @return array|\Psr\Http\Message\StreamInterface Returns an array of response
      *     parameters in "classic" mode, a Stream for any other mode.
+     * @throws Exception
      */
     public static function sendRequest($request, $responsetype = "")
     {
@@ -51,8 +52,7 @@ class Payone {
             // appends the accept: application/json header to the request
             // This is used to retrieve structured JSON in the response
             $client = new \GuzzleHttp\Client(['headers' => ['accept' => 'application/json']]);
-        }
-        else {
+        } else {
             // if $responsetype is set to anything else than "json", use the standard request
             $client = new \GuzzleHttp\Client();
         }
@@ -62,12 +62,13 @@ class Payone {
 
         if ($response = $client->request('POST', self::PAYONE_SERVER_API_URL, ['form_params' => $request])) {
 
-            if (implode($response->getHeader('Content-Type')) == 'text/plain; charset=UTF-8'){
+            if (implode($response->getHeader('Content-Type')) == 'text/plain; charset=UTF-8') {
                 // if the content type is text/plain, parse response into array
                 $return = self::parseResponse($response);
             } else {
-                // if the content type is anything else, just return the response body
-                $return = $response->getBody();
+                // if the content type is anything else, decode response body and parse into array
+                // we can safely assume it's JSON because of the way the API currently works
+                $return = json_decode($response->getBody(), true);
             }
 
         } else {
@@ -85,8 +86,8 @@ class Payone {
      * gets response string an puts it into an array
      *
      * @param \Psr\Http\Message\ResponseInterface $response
-     * @throws Exception
      * @return array
+     * @throws Exception
      */
     public static function parseResponse(\Psr\Http\Message\ResponseInterface $response)
     {

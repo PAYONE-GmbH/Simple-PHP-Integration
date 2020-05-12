@@ -61,14 +61,14 @@ class Payone
         $begin = microtime(true);
 
         if ($response = $client->request('POST', self::PAYONE_SERVER_API_URL, ['form_params' => $request])) {
-
-            if (implode($response->getHeader('Content-Type')) == 'text/plain; charset=UTF-8') {
+	    if (implode($response->getHeader('Content-Type')) == 'text/plain; charset=UTF-8' || 
+	        implode($response->getHeader('Content-Type')) == 'text/plain; charset=ISO-8859-1') {
                 // if the content type is text/plain, parse response into array
-                $return = self::parseResponse($response);
+		$return = self::parseResponse($response);
             } else {
                 // if the content type is anything else, decode response body and parse into array
                 // we can safely assume it's JSON because of the way the API currently works
-                $return = json_decode($response->getBody(), true);
+		$return = json_decode($response->getBody(), true);
             }
 
         } else {

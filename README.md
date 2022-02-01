@@ -1,3 +1,6 @@
+#  This Repo has been replaced by our Checkout Demo App
+Get it here: https://github.com/PAYONE-GmbH/checkout-demo
+
 # A Simple PAYONE Integration in PHP
 
 ## What is This About?
